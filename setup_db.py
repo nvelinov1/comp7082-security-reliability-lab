@@ -8,16 +8,17 @@ CREATE TABLE IF NOT EXISTS saved_cart (user_id TEXT NOT NULL, sku TEXT NOT NULL,
 CREATE TABLE IF NOT EXISTS orders (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id TEXT, amount REAL, status TEXT, request_id TEXT);
 '''
 
+def exec_sample_queries(conn):
+    conn.executescript(SCHEMA)
+    conn.executemany('INSERT OR IGNORE INTO products VALUES (?, ?, ?, ?)', [
+        ('LAP-01', 'Laptop', 999.99, 5),
+        ('MOU-01', 'Wireless mouse', 29.95, 20),
+        ('USB-01', 'USB cable', 9.99, 50),
+    ])
 
 def initialize(db_path='shop.db'):
     with sqlite3.connect(db_path) as conn:
-        conn.executescript(SCHEMA)
-        conn.executemany('INSERT OR IGNORE INTO products VALUES (?, ?, ?, ?)', [
-            ('LAP-01', 'Laptop', 999.99, 5),
-            ('MOU-01', 'Wireless mouse', 29.95, 20),
-            ('USB-01', 'USB cable', 9.99, 50),
-        ])
-
+        exec_sample_queries(conn)
 
 if __name__ == '__main__':
     initialize(sys.argv[1] if len(sys.argv) > 1 else 'shop.db')
