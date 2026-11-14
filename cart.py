@@ -15,6 +15,9 @@ class ShoppingCart:
         if not product:
             print('Unknown product')
             return False
+        if quantity <= 0:
+            print('Quantity must be positive')
+            return False
         if product.stock < quantity:
             print('Not enough stock')
             return False
@@ -26,6 +29,9 @@ class ShoppingCart:
         return True
 
     def remove_item(self, sku, quantity=None):
+        if quantity is not None and quantity <= 0:
+            print('Quantity must be positive')
+            return False
         for line in self.lines:
             if line.sku == sku:
                 if quantity is None or quantity >= line.quantity:
@@ -45,6 +51,9 @@ class ShoppingCart:
         return self.subtotal()
 
     def apply_discount(self, code):
+        if self.discounted_total is not None:
+            print('Coupon already applied to this cart')
+            return False
         amount = self.total()
         if code == 'WELCOME10':
             amount *= 0.9
